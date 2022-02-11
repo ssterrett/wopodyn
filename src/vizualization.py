@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def heatmap(time, angles, clip=None, timestep=10):
+def heatmap(time, angles, clip=None, timestep=10, fig=None, ax=None):
     """Plot heatmap of pose data."""
     xtimes = np.arange(min(time), max(time), timestep)
     xticks = []
@@ -23,8 +23,8 @@ def heatmap(time, angles, clip=None, timestep=10):
 
     # vs = 1 #hard limit
     vs = max([abs(np.amin(angles)), abs(np.amax(angles))])
-
-    fig, ax = plt.subplots(figsize=(13, 4))
+    if ax == None:
+        fig, ax = plt.subplots(figsize=(13, 4))
     im = ax.imshow(angles.T, aspect='auto', cmap='seismic', origin='lower',
                    vmin=-vs, vmax=vs)
     ax.set_xticks(xticks)
@@ -35,6 +35,6 @@ def heatmap(time, angles, clip=None, timestep=10):
     ax.set_yticks(yticks)
     ax.set_yticklabels(yticklabels)
     ax.set_ylabel('Segment')
-    fig.colorbar(im, label='Angle (radians)')
+    fig.colorbar(im, label='Angle (radians)', ax=ax)
 
     return fig, ax
