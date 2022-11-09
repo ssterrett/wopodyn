@@ -2,6 +2,7 @@
 #Imports
 import numpy as np
 import os
+from pathlib import Path
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 import matplotlib.backends.backend_pdf
@@ -18,18 +19,16 @@ from src.vizualization import heatmap
 
 #%%
 #compile data from all files in directory
-raw_dir = r"C:\Users\Scott\Documents\python\wopodyn\data\raw"
-suffix = r"\cam-1_Adult"
-path = raw_dir + suffix
+raw_dir = Path('./data/raw')
+suffix = 'cwn2_Adult'
+path = raw_dir / suffix
 angles = []
 filenames = []
-for root, dirs, files in os.walk(path):
-  for count, file in enumerate(files):
-    filenames.append(os.path.join(root,file))
-    angle = np.loadtxt(filenames[count], dtype= 'float', skiprows=1)
+for count, file in enumerate(path.glob('*')):
+    filenames.append(file)
+    angle = np.loadtxt(file, dtype= 'float', skiprows=1)
     angles.append(angle[:,1:]) #slice out time column
-print(count, ' files in directory for ', suffix[1:])
-
+print(f'{count+1} files in directory for {suffix}')
 # %%
 #scale and perform pca on data
 stds = []
@@ -59,8 +58,8 @@ Z = np.reshape(kde(positions).T, X.shape)
 C = np.cov(stds.T) # data must be (n_segments, n_frames)
 
 #
-reports_dir = r"C:\Users\Scott\Documents\python\wopodyn\reports\figures"
-figname = os.path.join(reports_dir, suffix[1:] + "-pcs.pdf")
+reports_dir = Path('./reports/figures')
+figname = reports_dir / (suffix + 'pcs.pdf')
 pdf = matplotlib.backends.backend_pdf.PdfPages(figname)
 
 #plotting
@@ -118,7 +117,7 @@ for file in filenames:
     lines =ax.plot(time, pcs[:,:4])
     ax.set(xlim=[min(time), max(time)])
     ax.legend(lines, ('PC1', 'PC2', 'PC3', 'PC4'))
-    fig.suptitle(os.path.split(file)[1])
+    fig.suptitle(file.parts[-1])
     pdf.savefig(fig)
 
 pdf.close()
