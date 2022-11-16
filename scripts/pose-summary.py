@@ -20,7 +20,7 @@ from src.vizualization import heatmap
 #%%
 #compile data from all files in directory
 raw_dir = Path('./data/raw')
-suffix = 'cwn2_Adult'
+suffix = 'N2_Adult'
 path = raw_dir / suffix
 angles = []
 filenames = []
@@ -60,7 +60,7 @@ C = np.cov(stds.T) # data must be (n_segments, n_frames)
 #
 reports_dir = Path('./reports/figures')
 figname = reports_dir / (suffix + 'pcs.pdf')
-pdf = matplotlib.backends.backend_pdf.PdfPages(figname)
+# pdf = matplotlib.backends.backend_pdf.PdfPages(figname)
 
 #plotting
 fig = plt.figure(figsize=(12,9))
@@ -96,7 +96,10 @@ ax.set(xlabel="Eigenworm", ylabel = "Segment")
 
 fig.suptitle(suffix[1:] + " Posture Summary", size=20)
 
-pdf.savefig(fig)
+# %%
+fig.savefig(Path('reports/figures/swim.png'), dpi=300)
+# %%
+# pdf.savefig(fig)
 # plt.savefig("egl-20adult.png", dpi=300)
 
 # plot heatmap and pcs for each trial

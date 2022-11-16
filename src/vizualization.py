@@ -35,6 +35,7 @@ def heatmap(time, angles, clip=None, timestep=10, fig=None, ax=None):
     ax.set_yticks(yticks)
     ax.set_yticklabels(yticklabels)
     ax.set_ylabel('Segment')
-    fig.colorbar(im, label='Angle (radians)', ax=ax)
+    fig.colorbar(im, label='Angle (au)', ax=ax)
+    # fig.colorbar(im, label='Angle (radians)', ax=ax)
 
     return fig, ax
