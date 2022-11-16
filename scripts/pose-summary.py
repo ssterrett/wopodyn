@@ -1,7 +1,6 @@
 #%%
 #Imports
 import numpy as np
-import os
 from pathlib import Path
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
@@ -14,7 +13,8 @@ from sklearn.decomposition import PCA
 
 from scipy.stats import gaussian_kde
 
-from src.vizualization import heatmap
+from wopodyn.vizualization import heatmap
+from wopodyn import utils
 
 
 #%%
@@ -24,23 +24,15 @@ suffix = 'N2_Adult'
 path = raw_dir / suffix
 angles = []
 filenames = []
-for count, file in enumerate(path.glob('*')):
-    filenames.append(file)
-    angle = np.loadtxt(file, dtype= 'float', skiprows=1)
-    angles.append(angle[:,1:]) #slice out time column
+for count, filename in enumerate(path.glob('*')):
+    filenames.append(filename)
+    time, angle = utils.loadwl(filename)
+    angles.append(angle) #slice out time column
 print(f'{count+1} files in directory for {suffix}')
 # %%
 #scale and perform pca on data
-stds = []
-for angle in angles:
-  scaler = StandardScaler() #initialize a standarizing object
-  stds.append(scaler.fit_transform(angle)) #normalize the data
-stds = np.vstack(stds) #stack to (n_frames, n_segments) for all data
+pca, pcs, stds = utils.eigenworm(angles)
 
-pca = PCA(n_components=10) #init pca object
-pcs = pca.fit_transform(stds) #fit and transform the angles data
-
-#
 #calculate cumvar, eigenworms, and PC histogram
 cumvar = np.cumsum(np.hstack(([0], pca.explained_variance_ratio_)))
 
@@ -94,7 +86,7 @@ ax = ax4
 im2 = ax.imshow(pca.components_.T, cmap='bwr')
 ax.set(xlabel="Eigenworm", ylabel = "Segment")
 
-fig.suptitle(suffix[1:] + " Posture Summary", size=20)
+fig.suptitle(suffix + " Posture Summary", size=20)
 
 # %%
 fig.savefig(Path('reports/figures/swim.png'), dpi=300)
@@ -124,3 +116,5 @@ for file in filenames:
     pdf.savefig(fig)
 
 pdf.close()
+
+# %%
