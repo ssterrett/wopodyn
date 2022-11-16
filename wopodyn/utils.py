@@ -51,4 +51,4 @@ def eigenworm(angles):
     pca = PCA(n_components=10) #init pca object
     pcs = pca.fit_transform(stds) #fit and transform the angles data
 
-    return pca, pcs
+    return pca, pcs, stds

@@ -31,9 +31,8 @@ for count, filename in enumerate(path.glob('*')):
 print(f'{count+1} files in directory for {suffix}')
 # %%
 #scale and perform pca on data
-pca, pcs = utils.eigenworm(angles)
+pca, pcs, stds = utils.eigenworm(angles)
 
-#
 #calculate cumvar, eigenworms, and PC histogram
 cumvar = np.cumsum(np.hstack(([0], pca.explained_variance_ratio_)))
 
