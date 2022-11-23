@@ -4,30 +4,45 @@ from pathlib import Path
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
-def loadwl(filename):
+def loadwl(filename, mode='au'):
     """ Returns angles and time from wormlab output
     Args:
-        filename: relative path of .txt wormlab output
+        filename : string
+            relative path of .txt wormlab output
+        mode : {'au', 'rads'}, default: 'au'
+        return data in units of arbitrary or radians
     
     Returns:
-        time: array of timestamps in seconds
-        angles: array of joint angles in radians
+        time : array of timestamps in seconds
+        angles : array of joint angles in radians
     """
     filename = Path(filename) # convert to pathlib Path
-    assert filename.suffix == '.txt', 'Filename not in .txt format'
+    assert filename.suffix == '.txt', 'Filename not a .txt file'
     
-    # Get worm size for unit conversion
-    n_segments = 11
-    with open(filename) as f:
-        first_line = f.readline()
-    ls = first_line.split()
-    size = int(ls[-2])
-    step = (size/1000)/n_segments
+    try:
+        # Get worm size for unit conversion
+        n_segments = 11
+        with open(filename) as f:
+            first_line = f.readline()
+        ls = first_line.split()
+        size = int(ls[-2])
+        step = (size/1000)/n_segments
 
-    # Load data and extract time (s) and angles (rads)
-    data = np.loadtxt(filename, dtype= 'float', skiprows=1)
+    except UnicodeDecodeError:
+        print(f'{filename} has unknown character')
+
+    try:
+        # Load data and extract time (s) and angles (rads)
+        data = np.loadtxt(filename, dtype= 'float', skiprows=1)
+
+    except ValueError as e:
+        print(f'{filename} has missing rows')
+    
     time = data[:, 0] # time in seconds
-    angles = data[:,1:]*step # joint angles in radians
+    if mode == 'au':
+        angles = data[:,1:] # joint angles in au
+    if mode == 'rad':
+        angles = data[:,1:]*step # joint angles in radians
 
     return time, angles
 
