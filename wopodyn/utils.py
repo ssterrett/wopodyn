@@ -25,24 +25,23 @@ def loadwl(filename, mode='au'):
         with open(filename) as f:
             first_line = f.readline()
         ls = first_line.split()
-        size = int(ls[-2])
-        step = (size/1000)/n_segments
+        # size = int(ls[-2])
+        # step = (size/1000)/n_segments
 
     except UnicodeDecodeError:
         print(f'{filename} has unknown character')
 
     try:
         # Load data and extract time (s) and angles (rads)
-        data = np.loadtxt(filename, dtype= 'float', skiprows=1)
-
+        data = np.loadtxt(filename, dtype= 'float', skiprows=1)     
+        time = data[:, 0] # time in seconds
+        if mode == 'au':
+            angles = data[:,1:] # joint angles in au
+        # if mode == 'rad':
+        #     angles = data[:,1:]*step # joint angles in radians
     except ValueError as e:
         print(f'{filename} has missing rows')
-    
-    time = data[:, 0] # time in seconds
-    if mode == 'au':
-        angles = data[:,1:] # joint angles in au
-    if mode == 'rad':
-        angles = data[:,1:]*step # joint angles in radians
+
 
     return time, angles
 

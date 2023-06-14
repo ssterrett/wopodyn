@@ -20,8 +20,8 @@ for i in range(1,len(dfs)):
 
     df = dfs[ids[i]].to_numpy()
     if np.sum(np.isnan(df)) == 0:
-        time=df[:,0]
-        dat = df[:,1:]
+        time = df[:, 0]
+        dat = df[:, 1:]
         dat = StandardScaler().fit_transform(dat)
         dat_pc = pca.transform(dat)
         dat_pc = dat_pc.T
@@ -30,16 +30,17 @@ for i in range(1,len(dfs)):
         wavelets_init = signal.cwt(dat_pc[0,:], signal.ricker, widths)
 
         for x in range(9):
-          cwtmatr = signal.cwt(dat_pc[x+1,:], signal.ricker, widths)
-          wavelets_init = np.concatenate([wavelets_init, cwtmatr])
-        #concatenate and z-score wavelets
-        wavelets_stand = StandardScaler().fit_transform(wavelets_init)
-        wavelets_all_norm = np.vstack((wavelets_all_norm, wavelets_stand.T))
+            cwtmatr = signal.cwt(dat_pc[x+1,:], signal.ricker, widths)
+            wavelets_init = np.concatenate([wavelets_init, cwtmatr])
+            # concatenate and z-score wavelets
+            wavelets_stand = StandardScaler().fit_transform(wavelets_init)
+            wavelets_all_norm = np.vstack((wavelets_all_norm, wavelets_stand.T))
 
 # tsne dim reduction
 tsne_dyn = TSNE(n_components=2, perplexity=30.0, n_iter=1000, verbose=1).fit_transform(wavelets_all_norm)
 
 #%%
+# animated plot of pose dynamics
 # to plot an individual session, need start and stop inds for that session
 
 fig, ax = plt.subplots(figsize=(5, 3))

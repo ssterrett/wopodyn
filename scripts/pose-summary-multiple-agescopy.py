@@ -8,14 +8,29 @@ import os
 from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.backends.backend_pdf
-plt.style.use('seaborn-talk')
+# plt.style.use('seaborn-talk')
+matplotlib.rcParams['lines.linewidth'] = 0.5
+matplotlib.rcParams['lines.markersize'] = 1
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
+matplotlib.rcParams['font.sans-serif'] = 'Arial'
+matplotlib.rcParams['font.size'] = 6
+matplotlib.rcParams['axes.unicode_minus'] = False
+matplotlib.rcParams['axes.labelsize'] = 6
+matplotlib.rcParams['axes.labelpad'] = 0
+matplotlib.rcParams['xtick.labelsize'] = 6
+matplotlib.rcParams['xtick.major.size'] = 2
+matplotlib.rcParams['xtick.major.width'] = 0.3
+matplotlib.rcParams['ytick.labelsize'] = 6
+matplotlib.rcParams['ytick.major.size'] = 2
+matplotlib.rcParams['ytick.major.width'] = 0.3
 
 # %%
 # Note about formatting files and folders:
 # Keep your data in .txt files that are organized in folders for each strain, age, and mode (crawling/swimming)
 # Make sure to name these folders as "strain_age_mode", for example "N2_L1_swimming" or "egl_L3_crawling"
 # Keep all of these folders in a broader subfolder, given by the path in raw_dir
-raw_dir = 'data/raw'
+raw_dir = 'data/raw/swimming'
 strain = 'N2'
 ages = ['_L1', '_LateL1', '_L2', '_L3', '_L4', '_Adult']
 
@@ -135,9 +150,9 @@ for age_files in filenames:
 # pdf = matplotlib.backends.backend_pdf.PdfPages(figname)
 # %%
 # Initialize the plotting framework
-fig, axs = plt.subplots(2, 3, figsize=(10, 5.5))
+fig, axs = plt.subplots(2, 3, figsize=(4.25, 2.55))
 axr = axs.ravel()
-fig.subplots_adjust(right=0.8)
+# fig.subplots_adjust(right=0.8)
 
 # Iterate through all the age groups and axes in the subplot
 for i in range(len(axr)):
@@ -147,37 +162,34 @@ for i in range(len(axr)):
 
     # Actually plot the data, and save the .pdf file
     ax = axr[i]
-    ax.patch.set_alpha(0.5)
-    im = ax.imshow(np.rot90(Zs[i]), cmap='inferno', extent=[-5, 5, -5, 5], vmin=0, vmax=vmax, aspect='equal')
-    ax.set(xlim=[-4, 4], ylim=[-4, 4], xlabel='Eigenworm 1', ylabel='Eigenworm 2')
+    im = ax.imshow(Zs[i], origin='lower', cmap='viridis', extent=[-5, 5, -5, 5], vmin=0, vmax=vmax, aspect='equal')
+    ax.set(xlim=[-4, 4],
+            xticks=[-2.5, 0, 2.5],
+            ylim=[-4, 4],
+            xlabel='Eigenworm 1',
+            ylabel='Eigenworm 2',)
     # plt.colorbar(im1, ax=ax)
     # a = ages[i]
     # ax.set(title=ages[i] + ", n = " + str(len(filenames[i])))
 # fig.colorbar(im, ax= axs[:, 2])
 # fig.suptitle("N2 " + "PC Histograms over Lifestages", size=20)
-cbar_ax = fig.add_axes([0.825, 0.15, 0.025, 0.7])
-cbar = fig.colorbar(im, cax=cbar_ax, label='Density')
-cbar.ax.set_yticks([0, vmax], ['0', 'Max'])
-# plt.tight_layout()
+# cbar_ax = fig.add_axes([0.825, 0.15, 0.025, 0.7])
+# cbar = fig.colorbar(im, cax=cbar_ax, label='Density')
+# cbar.ax.set_yticks([0, vmax], ['0', 'Max'])
+plt.tight_layout()
 # pdf.savefig(fig)
 # pdf.close()
 
 # %%
-# fig.savefig('reports/figures/devhist.pdf', dpi=300, transparent=True)
+fig.savefig('reports/figures/swimdevhist.pdf', dpi=300, transparent=True)
+
 # %%
-matplotlib.rcParams['lines.linewidth'] = 0.5
-matplotlib.rcParams['lines.markersize'] = 1
-matplotlib.rcParams['pdf.fonttype'] = 42
-matplotlib.rcParams['ps.fonttype'] = 42
-matplotlib.rcParams['font.sans-serif'] = 'Arial'
-matplotlib.rcParams['font.size'] = 6
-matplotlib.rcParams['axes.unicode_minus'] = False
-matplotlib.rcParams['axes.labelsize'] = 6
-matplotlib.rcParams['axes.labelpad'] = 0
-matplotlib.rcParams['xtick.labelsize'] = 6
-matplotlib.rcParams['xtick.major.size'] = 2
-matplotlib.rcParams['xtick.major.width'] = 0.3
-matplotlib.rcParams['ytick.labelsize'] = 6
-matplotlib.rcParams['ytick.major.size'] = 2
-matplotlib.rcParams['ytick.major.width'] = 0.3
+fig, ax = plt.subplots(figsize=(4,3))
+ax.set_axis_off()
+cbar_ax = fig.add_axes([0.825, 0.15, 0.025, 0.35])
+cbar = fig.colorbar(im, cax=cbar_ax, label='Density')
+cbar.ax.set_yticks([0, vmax], ['0', 'Max'])
+fig.savefig('reports/figures/cbardevhist.pdf', dpi=300, transparent=True)
+
 # %%
+import pickle

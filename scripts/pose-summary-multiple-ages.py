@@ -121,9 +121,9 @@ if __name__ == "__main__":
         Zs.append(Z)
 
     # Define the folder and filename where the .pdf file should be saved
-    reports_dir = r"C:\Users\arnav\Documents\wopodyn\reports"
-    figname = os.path.join(reports_dir, "N2"+mode+"-overall-trends.pdf")
-    pdf = matplotlib.backends.backend_pdf.PdfPages(figname)
+    # reports_dir = r"C:\Users\arnav\Documents\wopodyn\reports"
+    # figname = os.path.join(reports_dir, "N2"+mode+"-overall-trends.pdf")
+    # pdf = matplotlib.backends.backend_pdf.PdfPages(figname)
 
     # Initialize the plotting framework
     fig, axs = plt.subplots(2, 3, figsize=(24, 16))
@@ -145,8 +145,8 @@ if __name__ == "__main__":
         ax.set(title=a[4:] + ", n = " + str(len(filenames[i])))
         fig.suptitle("N2 " + mode[1:] + " PC Histograms over Lifestages", size=20)
 
-    pdf.savefig(fig)
-    pdf.close()
+    # pdf.savefig(fig)
+    # pdf.close()
 
 
 
